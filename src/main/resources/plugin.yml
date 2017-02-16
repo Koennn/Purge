@@ -4,3 +4,8 @@ main: me.koenn.purge.Purge
 prefix: Purge
 authors: [Koenn]
 description: A PvP purge plugin
+
+commands:
+  purge:
+    usage: /purge <subcommand>
+    description: General Purge command.

@@ -37,7 +37,7 @@ public class ConfigManager {
         this.config = plugin.getConfig();
 
         //Make the config.yml file if it doesn't exist.
-        if (!(new File(plugin.getDataFolder(), "config.yml")).exists()) {
+        if (!(new File(plugin.getDataFolder(), "main/resources/config.yml")).exists()) {
             plugin.saveDefaultConfig();
         }
     }

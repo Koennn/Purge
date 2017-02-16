@@ -1,0 +1,7 @@
+# Config file for the Purge plugin #
+messages:
+  purge_starting: 'The Purge is starting in %time% seconds!'
+  purge_started_large: 'The purge has started!'
+  purge_ended_large: 'The purge has ended!'
+  purge_started_small: 'All PvP is now legal'
+  purge_ended_small: 'PvP is disabled again'

@@ -1,5 +1,6 @@
 package me.koenn.purge;
 
+import me.koenn.purge.commands.PurgeCommand;
 import me.koenn.purge.util.ConfigManager;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -17,11 +18,26 @@ import java.util.Date;
  */
 public final class Purge extends JavaPlugin {
 
+    public static PurgeController activePurge;
+
     private static ConfigManager configManager;
+    private static Purge instance;
+
+    public static ConfigManager getConfigManager() {
+        return configManager;
+    }
+
+    public static Purge getInstance() {
+        return instance;
+    }
 
     @Override
     public void onEnable() {
+        instance = this;
+
         this.getLogger().info("All credits for this plugin go to Koenn");
+
+        this.getCommand("purge").setExecutor(new PurgeCommand());
 
         configManager = new ConfigManager(this);
 
