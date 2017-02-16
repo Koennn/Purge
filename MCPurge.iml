@@ -23,5 +23,6 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax.persistence:persistence-api:1.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.yaml:snakeyaml:1.15" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: net.md-5:bungeecord-chat:1.8-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="worldguard-6.2" level="project" />
   </component>
 </module>
