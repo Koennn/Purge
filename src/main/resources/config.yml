@@ -5,3 +5,17 @@ messages:
   purge_ended_large: 'The purge has ended!'
   purge_started_small: 'All PvP is now legal'
   purge_ended_small: 'PvP is disabled again'
+
+scoreboard:
+  lines:
+  - '&c&lAll PvP is currently legal!'
+  - '&f'
+  - '&f'
+  - '&c&lHighest scores:'
+  - '&f'
+  - '&0&l%player1%: %score1% kills'
+  - '&8&l%player2%: %score2% kills'
+  - '&7&l%player3%: %score3% kills'
+  - '&f'
+  - '&f'
+  - '&3&lYour score: %selfScore% kills'

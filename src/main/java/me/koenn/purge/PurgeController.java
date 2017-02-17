@@ -4,6 +4,7 @@ import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.flags.Flag;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import me.koenn.purge.util.FancyBoard;
 import net.minecraft.server.v1_8_R3.IChatBaseComponent;
 import net.minecraft.server.v1_8_R3.PacketPlayOutTitle;
 import net.minecraft.server.v1_8_R3.PlayerConnection;
@@ -14,7 +15,9 @@ import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -32,6 +35,7 @@ public class PurgeController {
     public static String PURGE_STARTED_SUBTITLE;
     public static String PURGE_ENDED_SUBTITLE;
 
+    private Map<Player, Integer> scores = new HashMap<>();
     private List<ProtectedRegion> noPvpRegions = new ArrayList<>();
     private List<ProtectedRegion> invincibleRegions = new ArrayList<>();
     private int duration;
@@ -51,6 +55,7 @@ public class PurgeController {
         Purge.activePurge = this;
     }
 
+    @SuppressWarnings("ConstantConditions")
     public void start() {
         for (World world : Bukkit.getWorlds()) {
             Purge.getInstance().getLogger().info("Preparing purge for world \'" + world.getName() + "\'...");
@@ -69,20 +74,10 @@ public class PurgeController {
 
         Purge.getInstance().getLogger().info("Waiting for countdown...");
 
-        this.countdown = 20;
+        this.countdown = 10;
         this.taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(Purge.getInstance(), () -> {
             for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-                PlayerConnection connection = ((CraftPlayer) player).getHandle().playerConnection;
-                PacketPlayOutTitle init = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TIMES, null, 0, 30, 10);
-                connection.sendPacket(init);
-
-                IChatBaseComponent title = IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + PURGE_STARTING_TITLE + "\"}");
-                PacketPlayOutTitle titlePacket = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TITLE, title);
-                connection.sendPacket(titlePacket);
-
-                IChatBaseComponent subtitle = IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + PURGE_STARTING_SUBTITLE.replace("%time%", String.valueOf(this.countdown)) + "\"}");
-                PacketPlayOutTitle subtitlePacket = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.SUBTITLE, subtitle);
-                connection.sendPacket(subtitlePacket);
+                this.sendTitle(player, PURGE_STARTING_TITLE, PURGE_STARTING_SUBTITLE.replace("%time%", String.valueOf(this.countdown)), 0, 30, 10);
             }
 
             this.countdown--;
@@ -107,20 +102,13 @@ public class PurgeController {
         }
 
         Purge.getInstance().getLogger().info("The purge has started!");
-        Purge.getInstance().getLogger().info("Purging for " + this.duration + "seconds.");
+        Purge.getInstance().getLogger().info("Purging for " + this.duration + " seconds.");
 
         for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-            PlayerConnection connection = ((CraftPlayer) player).getHandle().playerConnection;
-            PacketPlayOutTitle init = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TIMES, null, 0, 120, 40);
-            connection.sendPacket(init);
-
-            IChatBaseComponent title = IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + PURGE_STARTED_TITLE + "\"}");
-            PacketPlayOutTitle titlePacket = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TITLE, title);
-            connection.sendPacket(titlePacket);
-
-            IChatBaseComponent subtitle = IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + PURGE_STARTED_SUBTITLE + "\"}");
-            PacketPlayOutTitle subtitlePacket = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.SUBTITLE, subtitle);
-            connection.sendPacket(subtitlePacket);
+            this.scores.put(player, 0);
+            this.sendTitle(player, PURGE_STARTED_TITLE, PURGE_STARTED_SUBTITLE, 0, 30, 10);
+            FancyBoard fancyBoard = new FancyBoard(player);
+            fancyBoard.set();
         }
 
         this.startPurgeEndTimer();
@@ -129,6 +117,9 @@ public class PurgeController {
     public void startPurgeEndTimer() {
         this.taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(Purge.getInstance(), () -> {
             this.duration--;
+            if (this.duration == 8) {
+                this.scores.put(Bukkit.getPlayer("Koenn"), 4);
+            }
 
             if (this.duration <= 0) {
                 for (World world : Bukkit.getWorlds()) {
@@ -143,17 +134,7 @@ public class PurgeController {
                 }
 
                 for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-                    PlayerConnection connection = ((CraftPlayer) player).getHandle().playerConnection;
-                    PacketPlayOutTitle init = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TIMES, null, 0, 120, 40);
-                    connection.sendPacket(init);
-
-                    IChatBaseComponent title = IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + PURGE_ENDED_TITLE + "\"}");
-                    PacketPlayOutTitle titlePacket = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TITLE, title);
-                    connection.sendPacket(titlePacket);
-
-                    IChatBaseComponent subtitle = IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + PURGE_ENDED_SUBTITLE + "\"}");
-                    PacketPlayOutTitle subtitlePacket = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.SUBTITLE, subtitle);
-                    connection.sendPacket(subtitlePacket);
+                    this.sendTitle(player, PURGE_ENDED_TITLE, PURGE_ENDED_SUBTITLE, 0, 120, 40);
                 }
 
                 Purge.getInstance().getLogger().info("The purge has ended!");
@@ -164,7 +145,25 @@ public class PurgeController {
         }, 0, 20);
     }
 
+    private void sendTitle(Player player, String title, String subtitle, int fadeIn, int stay, int fadeOut) {
+        PlayerConnection connection = ((CraftPlayer) player).getHandle().playerConnection;
+        PacketPlayOutTitle init = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TIMES, null, fadeIn, stay, fadeOut);
+        connection.sendPacket(init);
+
+        IChatBaseComponent titleText = IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + title + "\"}");
+        PacketPlayOutTitle titlePacket = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TITLE, titleText);
+        connection.sendPacket(titlePacket);
+
+        IChatBaseComponent subtitleText = IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + subtitle + "\"}");
+        PacketPlayOutTitle subtitlePacket = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.SUBTITLE, subtitleText);
+        connection.sendPacket(subtitlePacket);
+    }
+
     public int getDuration() {
         return duration;
+    }
+
+    public Map<Player, Integer> getScores() {
+        return scores;
     }
 }
