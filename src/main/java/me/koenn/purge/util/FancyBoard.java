@@ -18,6 +18,7 @@ import static org.bukkit.ChatColor.translateAlternateColorCodes;
  * Proprietary and confidential
  * Written by Koen Willemse, February 2017
  */
+//TODO: Rework class to be dynamic.
 public class FancyBoard {
 
     private Scoreboard scoreboard;
@@ -51,11 +52,14 @@ public class FancyBoard {
         for (String line : board) {
             this.objective.getScore(line
                     .replace("%player1%", player1 != null ? player1.getName() : "")
-                    .replace("%player2%", player2 != null ? player2.getName() : "")
-                    .replace("%player3%", player3 != null ? player3.getName() : "")
                     .replace("%score1%", player1 != null ? String.valueOf(Purge.activePurge.getScores().get(player1)) : "")
+
+                    .replace("%player2%", player2 != null ? player2.getName() : "")
                     .replace("%score2%", player2 != null ? String.valueOf(Purge.activePurge.getScores().get(player2)) : "")
+
+                    .replace("%player3%", player3 != null ? player3.getName() : "")
                     .replace("%score3%", player3 != null ? String.valueOf(Purge.activePurge.getScores().get(player3)) : "")
+
                     .replace("%selfScore%", String.valueOf(Purge.activePurge.getScores().get(player)))
             ).setScore(index);
             index--;

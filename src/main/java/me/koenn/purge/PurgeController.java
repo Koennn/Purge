@@ -9,7 +9,6 @@ import net.minecraft.server.v1_8_R3.IChatBaseComponent;
 import net.minecraft.server.v1_8_R3.PacketPlayOutTitle;
 import net.minecraft.server.v1_8_R3.PlayerConnection;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -28,13 +27,6 @@ import java.util.Map;
  */
 public class PurgeController {
 
-    public static String PURGE_STARTING_TITLE;
-    public static String PURGE_STARTING_SUBTITLE;
-    public static String PURGE_STARTED_TITLE;
-    public static String PURGE_ENDED_TITLE;
-    public static String PURGE_STARTED_SUBTITLE;
-    public static String PURGE_ENDED_SUBTITLE;
-
     private Map<Player, Integer> scores = new HashMap<>();
     private List<ProtectedRegion> noPvpRegions = new ArrayList<>();
     private List<ProtectedRegion> invincibleRegions = new ArrayList<>();
@@ -44,14 +36,6 @@ public class PurgeController {
 
     public PurgeController(int duration) {
         this.duration = duration;
-
-        PURGE_STARTING_TITLE = ChatColor.DARK_RED + "" + ChatColor.BOLD + "WARNING";
-        PURGE_STARTING_SUBTITLE = ChatColor.RED + Purge.getConfigManager().getString("purge_starting", "messages");
-        PURGE_STARTED_TITLE = ChatColor.DARK_RED + "" + ChatColor.BOLD + Purge.getConfigManager().getString("purge_started_large", "messages");
-        PURGE_ENDED_TITLE = ChatColor.DARK_RED + "" + ChatColor.BOLD + Purge.getConfigManager().getString("purge_ended_large", "messages");
-        PURGE_STARTED_SUBTITLE = ChatColor.RED + "" + ChatColor.BOLD + Purge.getConfigManager().getString("purge_started_small", "messages");
-        PURGE_ENDED_SUBTITLE = ChatColor.RED + "" + ChatColor.BOLD + Purge.getConfigManager().getString("purge_ended_small", "messages");
-
         Purge.activePurge = this;
     }
 
@@ -77,12 +61,12 @@ public class PurgeController {
         this.countdown = 10;
         this.taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(Purge.getInstance(), () -> {
             for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-                this.sendTitle(player, PURGE_STARTING_TITLE, PURGE_STARTING_SUBTITLE.replace("%time%", String.valueOf(this.countdown)), 0, 30, 10);
+                this.sendTitle(player, Purge.getReferences().PURGE_STARTING_TITLE, Purge.getReferences().PURGE_STARTING_SUBTITLE.replace("%time%", String.valueOf(this.countdown)), 0, 40, 10);
             }
 
             this.countdown--;
             if (this.countdown <= 0) {
-                this.startPurge();
+                Bukkit.getScheduler().scheduleSyncDelayedTask(Purge.getInstance(), this::startPurge, 40);
             }
         }, 20, 20);
     }
@@ -106,7 +90,7 @@ public class PurgeController {
 
         for (Player player : Bukkit.getServer().getOnlinePlayers()) {
             this.scores.put(player, 0);
-            this.sendTitle(player, PURGE_STARTED_TITLE, PURGE_STARTED_SUBTITLE, 0, 30, 10);
+            this.sendTitle(player, Purge.getReferences().PURGE_STARTED_TITLE, Purge.getReferences().PURGE_STARTED_SUBTITLE, 0, 30, 10);
             FancyBoard fancyBoard = new FancyBoard(player);
             fancyBoard.set();
         }
@@ -117,9 +101,6 @@ public class PurgeController {
     public void startPurgeEndTimer() {
         this.taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(Purge.getInstance(), () -> {
             this.duration--;
-            if (this.duration == 8) {
-                this.scores.put(Bukkit.getPlayer("Koenn"), 4);
-            }
 
             if (this.duration <= 0) {
                 for (World world : Bukkit.getWorlds()) {
@@ -134,7 +115,7 @@ public class PurgeController {
                 }
 
                 for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-                    this.sendTitle(player, PURGE_ENDED_TITLE, PURGE_ENDED_SUBTITLE, 0, 120, 40);
+                    this.sendTitle(player, Purge.getReferences().PURGE_ENDED_TITLE, Purge.getReferences().PURGE_ENDED_SUBTITLE, 0, 120, 40);
                 }
 
                 Purge.getInstance().getLogger().info("The purge has ended!");
@@ -145,6 +126,7 @@ public class PurgeController {
         }, 0, 20);
     }
 
+    @SuppressWarnings("SameParameterValue")
     private void sendTitle(Player player, String title, String subtitle, int fadeIn, int stay, int fadeOut) {
         PlayerConnection connection = ((CraftPlayer) player).getHandle().playerConnection;
         PacketPlayOutTitle init = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TIMES, null, fadeIn, stay, fadeOut);

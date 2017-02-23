@@ -5,6 +5,7 @@ messages:
   purge_ended_large: 'The purge has ended!'
   purge_started_small: 'All PvP is now legal'
   purge_ended_small: 'PvP is disabled again'
+  kill_message: '&a&l+1 kill!'
 
 scoreboard:
   lines:
