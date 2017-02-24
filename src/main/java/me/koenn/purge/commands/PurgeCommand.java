@@ -18,6 +18,10 @@ public class PurgeCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (args.length == 0) {
+            return false;
+        }
+
         String subCommand = args[0].toLowerCase();
         switch (subCommand) {
             case "start":

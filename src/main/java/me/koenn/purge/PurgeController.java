@@ -58,7 +58,7 @@ public class PurgeController {
 
         Purge.getInstance().getLogger().info("Waiting for countdown...");
 
-        this.countdown = 10;
+        this.countdown = 20;
         this.taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(Purge.getInstance(), () -> {
             for (Player player : Bukkit.getServer().getOnlinePlayers()) {
                 this.sendTitle(player, Purge.getReferences().PURGE_STARTING_TITLE, Purge.getReferences().PURGE_STARTING_SUBTITLE.replace("%time%", String.valueOf(this.countdown)), 0, 40, 10);
@@ -66,7 +66,7 @@ public class PurgeController {
 
             this.countdown--;
             if (this.countdown <= 0) {
-                Bukkit.getScheduler().scheduleSyncDelayedTask(Purge.getInstance(), this::startPurge, 40);
+                Bukkit.getScheduler().scheduleSyncDelayedTask(Purge.getInstance(), this::startPurge, 30);
             }
         }, 20, 20);
     }
