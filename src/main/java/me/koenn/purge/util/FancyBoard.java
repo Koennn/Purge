@@ -7,6 +7,7 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.bukkit.ChatColor.translateAlternateColorCodes;
@@ -21,6 +22,8 @@ import static org.bukkit.ChatColor.translateAlternateColorCodes;
 //TODO: Rework class to be dynamic.
 public class FancyBoard {
 
+    public static final List<FancyBoard> fancyBoards = new ArrayList<>();
+
     private Scoreboard scoreboard;
     private Objective objective;
     private Player player;
@@ -29,13 +32,17 @@ public class FancyBoard {
     public FancyBoard(Player player) {
         this.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
         this.player = player;
+        fancyBoards.add(this);
         this.refreshBoard(false);
+    }
+
+    public static void disableAll() {
+        fancyBoards.forEach(FancyBoard::disable);
     }
 
     public void refreshBoard(boolean unregister) {
         if (!this.player.isOnline() || Purge.activePurge == null) {
-            Bukkit.getScheduler().cancelTask(this.task);
-            this.objective.unregister();
+            this.disable();
             return;
         }
         if (unregister) {
@@ -69,5 +76,10 @@ public class FancyBoard {
     public void set() {
         this.player.setScoreboard(this.scoreboard);
         this.task = Bukkit.getScheduler().scheduleSyncRepeatingTask(Purge.getInstance(), () -> this.refreshBoard(true), 0, 50);
+    }
+
+    public void disable() {
+        Bukkit.getScheduler().cancelTask(this.task);
+        this.objective.unregister();
     }
 }

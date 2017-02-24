@@ -4,6 +4,7 @@ import me.koenn.purge.commands.PurgeCommand;
 import me.koenn.purge.listeners.JoinListener;
 import me.koenn.purge.listeners.KillListener;
 import me.koenn.purge.util.ConfigManager;
+import me.koenn.purge.util.FancyBoard;
 import me.koenn.purge.util.References;
 import me.koenn.purge.util.UpdateChecker;
 import org.bukkit.Bukkit;
@@ -65,12 +66,15 @@ public final class Purge extends JavaPlugin {
             }
         }, 40);
 
-        this.getLogger().info("The plugin has been successfully setup, and ready to start the Purge!");
+        this.getLogger().info("The plugin has been successfully setup, we're ready to start the Purge!");
     }
 
     @Override
     public void onDisable() {
         this.getLogger().info("Stopping time check task...");
         Bukkit.getScheduler().cancelTasks(this);
+
+        this.getLogger().info("Disabling scoreboard...");
+        FancyBoard.disableAll();
     }
 }

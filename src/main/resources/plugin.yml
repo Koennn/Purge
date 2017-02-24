@@ -9,3 +9,11 @@ commands:
   purge:
     usage: /purge <subcommand>
     description: General Purge command.
+
+permissions:
+  purge.start:
+    default: op
+    description: Start a purge for a certain time.
+  purge.help:
+    default: op
+    description: See a list of purge commands.
