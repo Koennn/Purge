@@ -63,10 +63,6 @@
             <url>http://repo.bukkit.org/content/groups/public/</url>
         </repository>
         <repository>
-            <id>sonatype</id>
-            <url>https://oss.sonatype.org/content/groups/public/</url>
-        </repository>
-        <repository>
             <id>sk89q-repo</id>
             <url>http://maven.sk89q.com/repo/</url>
         </repository>
@@ -84,11 +80,6 @@
             <artifactId>craftbukkit</artifactId>
             <version>1.8.8-R3</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>LATEST</version>
         </dependency>
         <dependency>
             <groupId>com.sk89q</groupId>

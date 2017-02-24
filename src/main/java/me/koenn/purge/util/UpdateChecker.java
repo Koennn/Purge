@@ -4,8 +4,9 @@ import me.koenn.purge.Purge;
 import mkremins.fanciful.FancyMessage;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.io.*;
 import java.net.URL;
@@ -23,11 +24,13 @@ public class UpdateChecker {
     public static boolean updateAvailable() {
         try {
             JSONObject json = readJsonFromUrl(Purge.getReferences().VERSION_URL);
-            String latest = json.getString("latest");
+            String latest = (String) json.get("latest");
             return !latest.equals(Purge.getInstance().getDescription().getVersion());
         } catch (IOException e) {
             Purge.getInstance().getLogger().warning("Error in UpdateChecker. Are you connected to the internet?");
             throw new RuntimeException("Unable to get latest version. Are you connected to the internet?");
+        } catch (ParseException e) {
+            throw new RuntimeException("Unable to read version file, this is NOT your fault, please contact Koenn!");
         }
     }
 
@@ -53,11 +56,11 @@ public class UpdateChecker {
     }
 
     @SuppressWarnings("SameParameterValue")
-    private static JSONObject readJsonFromUrl(String url) throws IOException, JSONException {
+    private static JSONObject readJsonFromUrl(String url) throws IOException, ParseException {
         try (InputStream is = new URL(url).openStream()) {
             BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
             String jsonText = readAll(rd);
-            return new JSONObject(jsonText);
+            return (JSONObject) new JSONParser().parse(jsonText);
         }
     }
 }

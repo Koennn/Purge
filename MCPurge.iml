@@ -24,7 +24,6 @@
     <orderEntry type="library" name="Maven: org.yaml:snakeyaml:1.15" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: net.md-5:bungeecord-chat:1.8-SNAPSHOT" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: net.minecraft.server:craftbukkit:1.8.8-R3" level="project" />
-    <orderEntry type="library" name="Maven: org.json:json:20160810" level="project" />
     <orderEntry type="library" name="Maven: com.sk89q:worldguard:6.1" level="project" />
     <orderEntry type="library" name="Maven: com.sk89q:worldedit:5.5.8" level="project" />
     <orderEntry type="library" name="Maven: de.schlichtherle:truezip:6.8.3" level="project" />
