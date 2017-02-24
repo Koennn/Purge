@@ -28,13 +28,13 @@ public class PurgeCommand implements CommandExecutor {
             PluginDescriptionFile description = Purge.getInstance().getDescription();
             sender.sendMessage(ChatColor.AQUA + description.getName() + " v" + description.getVersion() + " by " + description.getAuthors().get(0));
             sender.sendMessage(ChatColor.AQUA + "Use /purge help for a list of commands");
-            return false;
+            return true;
         }
 
         String subCommand = args[0].toLowerCase();
         switch (subCommand) {
             case "start":
-                if (sender.hasPermission("purge.start")) {
+                if (!sender.hasPermission("purge.start")) {
                     sender.sendMessage(ChatColor.RED + "You don't have permission to execute this command!");
                     return true;
                 }
@@ -67,7 +67,7 @@ public class PurgeCommand implements CommandExecutor {
                 return true;
 
             case "help":
-                if (sender.hasPermission("purge.help")) {
+                if (!sender.hasPermission("purge.help")) {
                     sender.sendMessage(ChatColor.RED + "You don't have permission to execute this command!");
                     return true;
                 }
