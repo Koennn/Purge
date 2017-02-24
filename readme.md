@@ -10,4 +10,4 @@ The Minecraft Purge plugin brings the purge to Minecraft. After activating the P
 | ``` /purge start <time> ``` | Start a purge for a certain time  | ``` purge.start ``` |
 | ``` /purge time ``` | See how long the current purge still lasts | - |
 
-**[Download here](https://github.com/Koennn/Purge/raw/master/releases/MCPurge.jar)**
+**[Download here](http://u5115p3268.web0091.zxcs.nl/download/purge-1.1-BETA.jar)**
