@@ -2,11 +2,12 @@ package me.koenn.purge.commands;
 
 import me.koenn.purge.Purge;
 import me.koenn.purge.PurgeController;
-import org.bukkit.Bukkit;
+import me.koenn.purge.gui.PrizeGui;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 
 import static org.bukkit.ChatColor.translateAlternateColorCodes;
@@ -61,9 +62,10 @@ public class PurgeCommand implements CommandExecutor {
                     return true;
                 }
 
-                PurgeController purge = new PurgeController(duration);
-                sender.sendMessage(ChatColor.GREEN + "Starting a purge, please wait, this will take a few seconds!");
-                Bukkit.getScheduler().scheduleSyncDelayedTask(Purge.getInstance(), purge::start, 20);
+                PurgeController.preDuration = duration;
+
+                PrizeGui gui = new PrizeGui();
+                gui.open(((Player) sender));
                 return true;
 
             case "help":

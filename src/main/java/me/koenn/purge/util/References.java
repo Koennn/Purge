@@ -2,6 +2,12 @@ package me.koenn.purge.util;
 
 import me.koenn.purge.Purge;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>
@@ -25,6 +31,12 @@ public class References {
     public String PURGE_TIME_LEFT;
     public String NO_PURGE;
 
+    public ItemStack FIRST_PRIZE_ICON;
+    public ItemStack SECOND_PRIZE_ICON;
+    public ItemStack THIRD_PRIZE_ICON;
+    public ItemStack CONFIRM_ITEM;
+    public ItemStack CANCEL_ITEM;
+
     public References() {
         VERSION_URL = "http://u5115p3268.web0091.zxcs.nl/versions/purge.json";
         PURGE_STARTING_TITLE = ChatColor.DARK_RED + "" + ChatColor.BOLD + "WARNING";
@@ -37,6 +49,46 @@ public class References {
                 "&6- &7/purge help%" +
                 "&7  Shows this help menu.%" +
                 "&b-===============================================-";
+
+        FIRST_PRIZE_ICON = new ItemStack(Material.DIAMOND_BLOCK);
+        ItemMeta meta = FIRST_PRIZE_ICON.getItemMeta();
+        meta.setDisplayName(ChatColor.AQUA + "Prizes for first place");
+        List<String> lore = new ArrayList<>();
+        lore.add(ChatColor.RESET + "" + ChatColor.STRIKETHROUGH + "--------->");
+        meta.setLore(lore);
+        FIRST_PRIZE_ICON.setItemMeta(meta);
+
+        SECOND_PRIZE_ICON = new ItemStack(Material.GOLD_BLOCK);
+        meta = SECOND_PRIZE_ICON.getItemMeta();
+        meta.setDisplayName(ChatColor.GOLD + "Prizes for second place");
+        lore = new ArrayList<>();
+        lore.add(ChatColor.RESET + "" + ChatColor.STRIKETHROUGH + "--------->");
+        meta.setLore(lore);
+        SECOND_PRIZE_ICON.setItemMeta(meta);
+
+        THIRD_PRIZE_ICON = new ItemStack(Material.IRON_BLOCK);
+        meta = THIRD_PRIZE_ICON.getItemMeta();
+        meta.setDisplayName(ChatColor.GRAY + "Prizes for third place");
+        lore = new ArrayList<>();
+        lore.add(ChatColor.RESET + "" + ChatColor.STRIKETHROUGH + "--------->");
+        meta.setLore(lore);
+        THIRD_PRIZE_ICON.setItemMeta(meta);
+
+        CONFIRM_ITEM = new ItemStack(Material.WOOL, 1, (short) 5);
+        meta = CONFIRM_ITEM.getItemMeta();
+        meta.setDisplayName(ChatColor.GREEN + "" + ChatColor.BOLD + "Confirm and start purge");
+        lore = new ArrayList<>();
+        lore.add(ChatColor.RESET + "" + ChatColor.GREEN + "Click to confirm and start purge");
+        meta.setLore(lore);
+        CONFIRM_ITEM.setItemMeta(meta);
+
+        CANCEL_ITEM = new ItemStack(Material.WOOL, 1, (short) 14);
+        meta = CANCEL_ITEM.getItemMeta();
+        meta.setDisplayName(ChatColor.RED + "" + ChatColor.BOLD + "Cancel");
+        lore = new ArrayList<>();
+        lore.add(ChatColor.RESET + "" + ChatColor.RED + "Click to cancel");
+        meta.setLore(lore);
+        CANCEL_ITEM.setItemMeta(meta);
     }
 
     public boolean load() {

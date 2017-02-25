@@ -76,5 +76,10 @@ public final class Purge extends JavaPlugin {
 
         this.getLogger().info("Disabling scoreboard...");
         FancyBoard.disableAll();
+
+        if (activePurge != null) {
+            this.getLogger().info("Re-enabling protected areas...");
+            activePurge.resetProtectedAreas();
+        }
     }
 }

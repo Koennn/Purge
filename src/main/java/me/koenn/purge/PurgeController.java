@@ -12,6 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,15 +28,19 @@ import java.util.Map;
  */
 public class PurgeController {
 
+    public static int preDuration;
+
     private Map<Player, Integer> scores = new HashMap<>();
     private List<ProtectedRegion> noPvpRegions = new ArrayList<>();
     private List<ProtectedRegion> invincibleRegions = new ArrayList<>();
     private int duration;
     private int taskId;
     private int countdown;
+    private ItemStack[][] prizes;
 
-    public PurgeController(int duration) {
-        this.duration = duration;
+    public PurgeController() {
+        this.duration = preDuration;
+        this.prizes = new ItemStack[3][8];
         Purge.activePurge = this;
     }
 
@@ -103,16 +108,7 @@ public class PurgeController {
             this.duration--;
 
             if (this.duration <= 0) {
-                for (World world : Bukkit.getWorlds()) {
-                    Purge.getInstance().getLogger().info("Ending purge for world \'" + world.getName() + "\'...");
-                    for (ProtectedRegion region : this.noPvpRegions) {
-                        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "rg flag -w " + world.getName() + " " + region.getId() + " pvp deny");
-                    }
-                    for (ProtectedRegion region : this.invincibleRegions) {
-                        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "rg flag -w " + world.getName() + " " + region.getId() + " invincible allow");
-                    }
-                    Purge.getInstance().getLogger().info("Purge for world \'" + world.getName() + "\' has now ended!");
-                }
+                this.resetProtectedAreas();
 
                 for (Player player : Bukkit.getServer().getOnlinePlayers()) {
                     this.sendTitle(player, Purge.getReferences().PURGE_ENDED_TITLE, Purge.getReferences().PURGE_ENDED_SUBTITLE, 0, 120, 40);
@@ -124,6 +120,19 @@ public class PurgeController {
                 Bukkit.getScheduler().cancelTask(this.taskId);
             }
         }, 0, 20);
+    }
+
+    public void resetProtectedAreas() {
+        for (World world : Bukkit.getWorlds()) {
+            Purge.getInstance().getLogger().info("Ending purge for world \'" + world.getName() + "\'...");
+            for (ProtectedRegion region : this.noPvpRegions) {
+                Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "rg flag -w " + world.getName() + " " + region.getId() + " pvp deny");
+            }
+            for (ProtectedRegion region : this.invincibleRegions) {
+                Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "rg flag -w " + world.getName() + " " + region.getId() + " invincible allow");
+            }
+            Purge.getInstance().getLogger().info("Purge for world \'" + world.getName() + "\' has now ended!");
+        }
     }
 
     @SuppressWarnings("SameParameterValue")
@@ -147,5 +156,9 @@ public class PurgeController {
 
     public Map<Player, Integer> getScores() {
         return scores;
+    }
+
+    public void setPrizes(ItemStack[][] prizes) {
+        this.prizes = prizes;
     }
 }
